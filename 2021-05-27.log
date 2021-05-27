@@ -1,0 +1,78 @@
+2021-05-27 16:12:01.465 | INFO     | __main__:get_data:28 - 正在爬取186803402的弹幕
+2021-05-27 16:12:01.580 | DEBUG    | __main__:parse_html:42 - 弹幕数据处理中
+2021-05-27 16:12:01.684 | INFO     | __main__:data_preprocess:62 - 向186803402.csv写入弹幕文件
+2021-05-27 16:12:01.686 | ERROR    | __main__:data_preprocess:65 - 186803402.csv写入过程发生错误,错误原因: [Errno 2] No such file or directory: '../venv/csv/186803402.csv'
+2021-05-27 16:12:01.687 | INFO     | __main__:data_preprocess:67 - 对186803402.csv内的弹幕进行处理
+2021-05-27 16:12:01.687 | ERROR    | __main__:data_preprocess:85 - 发生错误:[Errno 2] No such file or directory: '186803402.csv'
+2021-05-27 16:13:25.144 | INFO     | __main__:get_data:28 - 正在爬取186803402的弹幕
+2021-05-27 16:13:25.300 | DEBUG    | __main__:parse_html:42 - 弹幕数据处理中
+2021-05-27 16:13:25.411 | INFO     | __main__:data_preprocess:62 - 向186803402.csv写入弹幕文件
+2021-05-27 16:13:25.418 | INFO     | __main__:data_preprocess:67 - 对186803402.csv内的弹幕进行处理
+2021-05-27 16:13:25.418 | ERROR    | __main__:data_preprocess:85 - 发生错误:[Errno 2] No such file or directory: '186803402.csv'
+2021-05-27 16:15:04.687 | INFO     | __main__:get_data:28 - 正在爬取186803402的弹幕
+2021-05-27 16:15:04.847 | DEBUG    | __main__:parse_html:42 - 弹幕数据处理中
+2021-05-27 16:15:04.954 | INFO     | __main__:data_preprocess:62 - 向186803402.csv写入弹幕文件
+2021-05-27 16:15:04.960 | INFO     | __main__:data_preprocess:67 - 对186803402.csv内的弹幕进行处理
+2021-05-27 16:15:04.960 | ERROR    | __main__:data_preprocess:85 - 发生错误:[Errno 2] No such file or directory: '186803402.csv'
+2021-05-27 16:16:18.713 | INFO     | __main__:get_data:28 - 正在爬取186803402的弹幕
+2021-05-27 16:16:18.835 | DEBUG    | __main__:parse_html:42 - 弹幕数据处理中
+2021-05-27 16:16:18.940 | INFO     | __main__:data_preprocess:62 - 向186803402.csv写入弹幕文件
+2021-05-27 16:16:18.946 | INFO     | __main__:data_preprocess:67 - 对186803402.csv内的弹幕进行处理
+2021-05-27 16:17:38.454 | INFO     | __main__:get_data:28 - 正在爬取186803402的弹幕
+2021-05-27 16:17:38.575 | DEBUG    | __main__:parse_html:42 - 弹幕数据处理中
+2021-05-27 16:17:38.679 | INFO     | __main__:data_preprocess:62 - 向186803402.csv写入弹幕文件
+2021-05-27 16:17:38.685 | INFO     | __main__:data_preprocess:67 - 对186803402.csv内的弹幕进行处理
+2021-05-27 16:18:20.863 | INFO     | __main__:get_data:28 - 正在爬取186803402的弹幕
+2021-05-27 16:18:20.988 | DEBUG    | __main__:parse_html:42 - 弹幕数据处理中
+2021-05-27 16:18:21.097 | INFO     | __main__:data_preprocess:62 - 向186803402.csv写入弹幕文件
+2021-05-27 16:18:21.103 | INFO     | __main__:data_preprocess:67 - 对186803402.csv内的弹幕进行处理
+2021-05-27 16:25:18.591 | INFO     | __main__:get_data:28 - 正在爬取186803402的弹幕
+2021-05-27 16:25:18.729 | DEBUG    | __main__:parse_html:42 - 弹幕数据处理中
+2021-05-27 16:25:18.835 | INFO     | __main__:data_preprocess:62 - 向186803402.csv写入弹幕文件
+2021-05-27 16:25:18.842 | INFO     | __main__:data_preprocess:67 - 对186803402.csv内的弹幕进行处理
+2021-05-27 16:27:16.531 | INFO     | __main__:get_data:28 - 正在爬取186803402的弹幕
+2021-05-27 16:27:16.680 | DEBUG    | __main__:parse_html:42 - 弹幕数据处理中
+2021-05-27 16:27:16.788 | INFO     | __main__:data_preprocess:62 - 向186803402.csv写入弹幕文件
+2021-05-27 16:27:16.794 | INFO     | __main__:data_preprocess:67 - 对186803402.csv内的弹幕进行处理
+2021-05-27 16:42:29.903 | INFO     | __main__:get_data:28 - 正在爬取343523220的弹幕
+2021-05-27 16:42:29.988 | DEBUG    | __main__:parse_html:42 - 弹幕数据处理中
+2021-05-27 16:42:29.993 | INFO     | __main__:data_preprocess:62 - 向343523220.csv写入弹幕文件
+2021-05-27 16:42:29.998 | INFO     | __main__:data_preprocess:67 - 对343523220.csv内的弹幕进行处理
+2021-05-27 17:40:35.408 | DEBUG    | __main__:get_data:24 - 正在提取视频的bvid
+2021-05-27 17:40:35.754 | INFO     | __main__:get_data:46 - 正在爬取https://www.bilibili.com/video/BV17541147ui?from=search&seid=11535182145005403104的弹幕
+2021-05-27 17:40:35.977 | DEBUG    | __main__:parse_html:60 - 弹幕数据处理中
+2021-05-27 17:40:36.083 | INFO     | __main__:data_preprocess:80 - 向https://www.bilibili.com/video/BV17541147ui?from=search&seid=11535182145005403104.csv写入弹幕文件
+2021-05-27 17:40:36.085 | ERROR    | __main__:data_preprocess:83 - https://www.bilibili.com/video/BV17541147ui?from=search&seid=11535182145005403104.csv写入过程发生错误,错误原因: Missing optional dependency 'fsspec'.  Use pip or conda to install fsspec.
+2021-05-27 17:40:36.085 | INFO     | __main__:data_preprocess:85 - 对https://www.bilibili.com/video/BV17541147ui?from=search&seid=11535182145005403104.csv内的弹幕进行处理
+2021-05-27 17:40:36.086 | ERROR    | __main__:data_preprocess:103 - 发生错误:[Errno 22] Invalid argument: '../venv/csv/https://www.bilibili.com/video/BV17541147ui?from=search&seid=11535182145005403104.csv'
+2021-05-27 17:47:55.449 | DEBUG    | __main__:get_data:25 - 正在提取视频的bvid
+2021-05-27 17:47:55.780 | INFO     | __main__:get_data:47 - 正在爬取https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1的弹幕
+2021-05-27 17:47:55.902 | DEBUG    | __main__:parse_html:61 - 弹幕数据处理中
+2021-05-27 17:47:55.953 | DEBUG    | __main__:parse_html:67 - 处理完毕
+2021-05-27 17:47:55.956 | INFO     | __main__:data_preprocess:82 - 向https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1.csv写入弹幕文件
+2021-05-27 17:47:55.959 | ERROR    | __main__:data_preprocess:85 - https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1.csv写入过程发生错误,错误原因: Missing optional dependency 'fsspec'.  Use pip or conda to install fsspec.
+2021-05-27 17:47:55.959 | INFO     | __main__:data_preprocess:87 - 对https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1.csv内的弹幕进行处理
+2021-05-27 17:47:55.959 | ERROR    | __main__:data_preprocess:105 - 发生错误:[Errno 22] Invalid argument: '../venv/csv/https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1.csv'
+2021-05-27 17:48:28.095 | DEBUG    | __main__:get_data:25 - 正在提取视频的bvid
+2021-05-27 17:48:28.467 | INFO     | __main__:get_data:47 - 正在爬取https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1的弹幕
+2021-05-27 17:48:28.577 | DEBUG    | __main__:parse_html:61 - 弹幕数据处理中
+2021-05-27 17:48:28.637 | DEBUG    | __main__:parse_html:67 - 处理完毕
+2021-05-27 17:48:28.639 | INFO     | __main__:data_preprocess:82 - 向https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1.csv写入弹幕文件
+2021-05-27 17:48:28.642 | ERROR    | __main__:data_preprocess:85 - https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1.csv写入过程发生错误,错误原因: Missing optional dependency 'fsspec'.  Use pip or conda to install fsspec.
+2021-05-27 17:48:28.643 | INFO     | __main__:data_preprocess:87 - 对https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1.csv内的弹幕进行处理
+2021-05-27 17:48:28.643 | ERROR    | __main__:data_preprocess:105 - 发生错误:[Errno 22] Invalid argument: '../venv/csv/https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1.csv'
+2021-05-27 17:49:11.686 | DEBUG    | __main__:get_data:25 - 正在提取视频的bvid
+2021-05-27 17:49:21.346 | DEBUG    | __main__:get_data:25 - 正在提取视频的bvid
+2021-05-27 17:49:21.674 | INFO     | __main__:get_data:47 - 正在爬取https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1的弹幕
+2021-05-27 17:49:21.816 | DEBUG    | __main__:parse_html:61 - 弹幕数据处理中
+2021-05-27 17:49:21.868 | DEBUG    | __main__:parse_html:67 - 处理完毕
+2021-05-27 17:49:21.871 | INFO     | __main__:data_preprocess:82 - 向https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1.csv写入弹幕文件
+2021-05-27 17:49:21.934 | ERROR    | __main__:data_preprocess:85 - https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1.csv写入过程发生错误,错误原因: Protocol not known: ../venv/csv/https
+2021-05-27 17:49:21.934 | INFO     | __main__:data_preprocess:87 - 对https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1.csv内的弹幕进行处理
+2021-05-27 17:49:21.934 | ERROR    | __main__:data_preprocess:105 - 发生错误:[Errno 22] Invalid argument: '../venv/csv/https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1.csv'
+2021-05-27 17:54:26.658 | DEBUG    | __main__:get_data:27 - 正在提取视频的bvid
+2021-05-27 17:54:26.983 | INFO     | __main__:get_data:51 - 正在爬取https://www.bilibili.com/video/BV1Ky4y137U8?spm_id_from=333.851.b_7265636f6d6d656e64.1的弹幕
+2021-05-27 17:54:27.102 | DEBUG    | __main__:parse_html:65 - 弹幕数据处理中
+2021-05-27 17:54:27.155 | DEBUG    | __main__:parse_html:71 - 处理完毕
+2021-05-27 17:54:27.158 | INFO     | __main__:data_preprocess:86 - 向343529826.csv写入弹幕文件
+2021-05-27 17:54:27.163 | INFO     | __main__:data_preprocess:91 - 对343529826.csv内的弹幕进行处理
