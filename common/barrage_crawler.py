@@ -1,6 +1,7 @@
 import string
 import time
 import re
+import math
 
 import bs4
 import jieba
@@ -79,11 +80,20 @@ def get_barrage(barrage_url) -> str:
 
 
 # 爬取评论
-def get_common(url):
+def get_comment(url):
     aid = get_av(url)
+    comment_list = []
     for i in range(3):
-        res = requests.get("https://api.bilibili.com/x/v2/reply?pn=1&type=1&oid={}&sort=1".format(aid))
-        # TODO: 获取评论数据
+        try:
+            res = requests.get("https://api.bilibili.com/x/v2/reply?pn=1&type=1&oid={}&sort=1".format(aid)).json()
+            comment_count = jsonpath(res, "$..data[page].count")[0]
+            for i in range(math.ceil(comment_count / 20)):
+                res = requests.get("https://api.bilibili.com/x/v2/reply?pn={}&type=1&oid={}&sort=1".format(i + 1, aid)).json()
+                comment = jsonpath(res, r"$..data[replies]..[content][message]")
+                comment_list.extend(comment)
+                return comment_list
+        except Exception as e:
+            logger.error("爬取评论时发生错误,错误详情:{}".format(e))
 
 
 # 处理爬取结果
@@ -114,15 +124,15 @@ def data_preprocess(barrage, file_name):
     pd_data = pd.DataFrame(data_dict)
     try:
         logger.info(f"向{file_name}.csv写入弹幕文件")
-        pd_data.to_csv(f'../venv/csv/{file_name}.csv', index=False, header=False, mode='w', encoding="utf-8-sig")
+        pd_data.to_csv(f'../data/csv/{file_name}.csv', index=False, header=False, mode='w', encoding="utf-8-sig")
     except Exception as e:
         logger.error(f"{file_name}.csv写入过程发生错误,错误原因: {e}")
     try:
         logger.info(f"对{file_name}.csv内的弹幕进行处理")
-        with open(f"../venv/csv/{file_name}.csv", mode='r', encoding="utf-8") as f:
+        with open(f"../data/csv/{file_name}.csv", mode='r', encoding="utf-8") as f:
             reader = f.read().replace('\n', '')
             # 加载停用词表
-            stopwords = [line.strip() for line in open('../venv/stop_words.txt', encoding='utf-8').readlines()]
+            stopwords = [line.strip() for line in open('../data/stop_words.txt', encoding='utf-8').readlines()]
             # 去标点，去空白，去数字
             logger.debug("去除标点符号、空白符、数字")
             pun_num = string.punctuation + string.digits
@@ -152,12 +162,12 @@ def count_words(text, file_name):
     for word in words:
         frequency[word] = frequency.get(word, 0) + 1
     pd_count = pd.DataFrame(frequency, index=['times']).T.sort_values('times', ascending=False)
-    pd_count.to_csv(f'../venv/csv/{file_name}_words_frequency.csv')
+    pd_count.to_csv(f'../data/csv/{file_name}_words_frequency.csv')
 
 
 # 生成词云
 def gen_cwd(text, file_name):
-    mask = np.array(Image.open("../venv/img/imgs.png"))
+    mask = np.array(Image.open("../data/img/imgs.png"))
     wcd = WordCloud(
         colormap='Blues',  # 根据词频展示颜色，次数越多则越蓝
         font_path="C:\\Windows\\Fonts\\STFANGSO.TTF",
@@ -169,7 +179,7 @@ def gen_cwd(text, file_name):
         collocations=False
     )
     image_produce = wcd.generate(text).to_image()
-    image_produce.save("../venv/WordCloud/{}.png".format(file_name))
+    image_produce.save("../data/WordCloud/{}.png".format(file_name))
 
 
 if __name__ == '__main__':
