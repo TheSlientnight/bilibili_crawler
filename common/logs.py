@@ -5,14 +5,17 @@ from loguru import logger
 from common.log_record import archive_log
 
 
-class MyLogger:
+class Loggings:
     __instance = None
     logger.add("{}".format(archive_log(), time.strftime("%Y-%m-%d")), rotation="500MB", encoding="utf-8",
-               enqueue=True)
+               enqueue=True,
+               retention="10 days")
 
     def __new__(cls, *args, **kwargs):
         if not cls.__instance:
-            cls.__instance = super(MyLogger, cls).__new__(cls, *args, **kwargs)
+            cls.__instance = super(Loggings, cls).__new__(cls, *args, **kwargs)
+
+        return cls.__instance
 
     def __init__(self):
         self.log = logger
@@ -30,4 +33,7 @@ class MyLogger:
         return self.log.error(msg)
 
 
-logging = MyLogger()
+logging = Loggings()
+
+if __name__ == '__main__':
+    logging.info("123456")
