@@ -2,6 +2,8 @@ import time
 from pathlib import Path
 from random import uniform
 
+import threadpool as threadpool
+
 from common.video_crawler import *
 
 lock = threading.Lock()
@@ -138,11 +140,13 @@ class UpSpace:
             barrage_url = get_cid(vurl)
             txt = get_barrages(barrage_url)
             p_data = parse_html(txt)
-            self.__data_preprocess(p_data, self.name)
+            if p_data:
+                self.__data_preprocess(p_data, self.name)
+
 
     def __make_cwd(self):
-        self.__count_words(self.sentence, self.name)
-        gen_cwd(self.sentence, self.name)
+        if self.sentence:
+            gen_cwd(self.sentence, self.name)
 
     def __data_preprocess(self, barrage, file_name):
         data_dict = {
@@ -177,47 +181,53 @@ class UpSpace:
                         sentence += word
                         sentence += ","
                     sentence = sentence
-            self.sentence = "".join(sentence)
+            self.__count_words(sentence, self.name)
+            self.sentence += "".join(sentence)
             self.__make_cwd()
+            self.sentence = ""
         except Exception as e:
             logging.error("处理弹幕时发生错误:{}".format(e))
 
     # 处理评论
     def __save_comment(self, comment, file_name):
-        comment_dict = {
-            "comment": comment
-        }
-        pd_data = pd.DataFrame(comment_dict)
-        try:
-            logging.info("向{}_评论.csv中写入评论".format(file_name))
-            if Path(f"data/csv/{self.space}/{file_name}").absolute().is_dir() is not True:
-                logging.debug(f"创建目录:{self.space}/{file_name}")
-                Path(f"data/csv/{self.space}/{file_name}").absolute().mkdir()
-            pd_data.to_csv(f"data/csv/{self.space}/{file_name}/{file_name}_评论.csv", index=False, header=False, mode="w",
-                           encoding="utf-8_sig")
-        except Exception as e:
-            logging.error(f"{file_name}.csv写入过程发生错误,错误原因: {e}")
-        try:
-            logging.info(f"对{file_name}_评论.csv内的评论进行处理")
-            with open(f"data/csv/{self.space}/{file_name}/{file_name}_评论.csv", mode="r", encoding="utf-8") as f:
-                reader = f.read().replace("\n", "")
-                # 加载停用词表
-                stopwords = [line.strip() for line in open("data/stop_words.txt", encoding="utf-8").readlines()]
-                # 去标点，去空白，去数字
-                logging.debug("去除标点符号、空白符、数字")
-                pun_num = string.punctuation + string.digits
-                table = str.maketrans("", "", pun_num)
-                reader = reader.translate(table)
-                seg_list = jieba.lcut(reader, cut_all=True)  # 精确分词
-                sentence = ""
-                for word in seg_list:
-                    if word not in stopwords and word.isspace() is False:
-                        sentence += word
-                        sentence += ","
-                    sentence = sentence
-            self.sentence = "".join(sentence)
-        except Exception as e:
-            logging.error("处理评论时发生错误:{}".format(e))
+        if comment:
+            comment_dict = {
+                "comment": comment
+            }
+            pd_data = pd.DataFrame(comment_dict)
+            try:
+                logging.info("向{}_评论.csv中写入评论".format(file_name))
+                if Path(f"data/csv/{self.space}/{file_name}").absolute().is_dir() is not True:
+                    logging.debug(f"创建目录:{self.space}/{file_name}")
+                    Path(f"data/csv/{self.space}/{file_name}").absolute().mkdir()
+                pd_data.to_csv(f"data/csv/{self.space}/{file_name}/{file_name}_评论.csv", index=False, header=False, mode="w",
+                               encoding="utf-8_sig")
+            except Exception as e:
+                logging.error(f"{file_name}.csv写入过程发生错误,错误原因: {e}")
+            try:
+                logging.info(f"对{file_name}_评论.csv内的评论进行处理")
+                with open(f"data/csv/{self.space}/{file_name}/{file_name}_评论.csv", mode="r", encoding="utf-8") as f:
+                    reader = f.read().replace("\n", "")
+                    # 加载停用词表
+                    stopwords = [line.strip() for line in open("data/stop_words.txt", encoding="utf-8").readlines()]
+                    # 去标点，去空白，去数字
+                    logging.debug("去除标点符号、空白符、数字")
+                    pun_num = string.punctuation + string.digits
+                    table = str.maketrans("", "", pun_num)
+                    reader = reader.translate(table)
+                    seg_list = jieba.lcut(reader, cut_all=True)  # 精确分词
+                    sentence = ""
+                    for word in seg_list:
+                        if word not in stopwords and word.isspace() is False:
+                            sentence += word
+                            sentence += ","
+                        sentence = sentence
+                self.__count_words(sentence, self.name)
+                self.sentence += "".join(sentence)
+            except Exception as e:
+                logging.error("处理评论时发生错误:{}".format(e))
+        else:
+            logging.warning("当前视频:{}没有评论".format(file_name))
 
     def __count_words(self, text, file_name):
         """

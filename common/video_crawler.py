@@ -150,7 +150,7 @@ def get_comments(aid) -> list:
 
 
 # 处理爬取结果
-def parse_html(text) -> list:
+def parse_html(text):
     """
     :param text:上一步获取的xml的text格式
     :return: 弹幕列表
@@ -161,8 +161,11 @@ def parse_html(text) -> list:
     barrage_list = []
     for i in soup.findAll(name='d'):
         barrage_list.append(i.text)
-    logging.debug("弹幕处理完毕")
-    return barrage_list[1:]
+    if barrage_list:
+        logging.debug("弹幕处理完毕")
+        return barrage_list[1:]
+    else:
+        logging.warning("当前视频没有弹幕")
 
 
 # # 存储并处理爬取到的弹幕
