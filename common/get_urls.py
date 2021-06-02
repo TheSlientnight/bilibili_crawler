@@ -1,13 +1,113 @@
+import math
+import re
+import string
+import threading
 import time
+import requests
 from pathlib import Path
 from random import uniform
 
-import threadpool as threadpool
-
-from common.video_crawler import *
+import bs4
+import jieba
+import numpy as np
+import pandas as pd
+import threadpool
+from PIL import Image
+from jsonpath import jsonpath
+from matplotlib import colors
+from wordcloud import WordCloud
+from common.logs import logging
 
 lock = threading.Lock()
 pool = threadpool.ThreadPool(1)
+
+
+def get_comments(aid) -> list:
+    comment_list = []
+
+    def get_comment(page):
+        res = requests.get("https://api.bilibili.com/x/v2/reply?pn={}&type=1&oid={}&sort=1"
+                           .format(page, aid)).json()
+        comment = jsonpath(res, r"$..data[replies]..[content][message]")
+        lock.acquire()
+        comment_list.extend(comment)
+        lock.release()
+
+    for i in range(3):
+        try:
+            num_res = requests.get("https://api.bilibili.com/x/v2/reply?pn=1&type=1&oid={}&sort=1".format(aid)).json()
+            comment_count = jsonpath(num_res, "$..data[page].count")[0]
+            page_num = math.ceil(comment_count / 20) + 1
+            logging.debug(f"共计{page_num}页评论")
+            pg_list = [pg for pg in range(1, page_num)]
+            tasks = threadpool.makeRequests(get_comment, pg_list)
+            [pool.putRequest(task) for task in tasks]
+            pool.wait()
+        except Exception as e:
+            logging.error("爬取评论时发生错误,错误详情:{}".format(e))
+            continue
+        if comment_list:
+            return comment_list
+        else:
+            logging.error("爬取评论时发生错误,任务终止")
+            break
+
+
+def get_barrages(burl) -> str:
+    """
+    :param burl:弹幕接口
+    :return:爬取结果的xml文件
+    """
+    HEADERS = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/90.0.4430.212 Safari/537.36 Edg/90.0.818.66 "
+    }
+    for i in range(3):
+        try:
+            logging.info(f"正在爬取{burl}的弹幕")
+            res = requests.get(burl, headers=HEADERS).content.decode("utf-8")
+            return res
+        except Exception as e:
+            logging.error(f"爬取{burl}的弹幕失败，错误原因:{e}")
+            continue
+
+
+def parse_html(text):
+    """
+    :param text:上一步获取的xml的text格式
+    :return: 弹幕列表
+    """
+    logging.debug("弹幕数据处理中")
+    soup = bs4.BeautifulSoup(text, "html.parser")
+    # 获取d标签内的内容，并提取出来
+    barrage_list = []
+    for i in soup.findAll(name='d'):
+        barrage_list.append(i.text)
+    if barrage_list:
+        logging.debug("弹幕处理完毕")
+        return barrage_list[1:]
+    else:
+        logging.warning("当前视频没有弹幕")
+
+
+def get_cid(bvid):
+    barrage_url = ""
+    # 重试三次
+    for i in range(3):
+        try:
+            logging.debug("正在获取cid")
+            res = requests.get("https://api.bilibili.com/x/player/pagelist?bvid={}&jsonp=jsonp".
+                               format(bvid)).json()
+            cid = jsonpath(res, "$..data[0]")[0]['cid']
+            barrage_url = f"https://comment.bilibili.com/{cid}.xml"
+            return barrage_url
+        except Exception as e:
+            logging.error("获取cid失败,错误原因:{}".format(e))
+            if i == 2:
+                raise e
+            else:
+                continue
+    return barrage_url
 
 
 class UpSpace:
@@ -93,7 +193,6 @@ class UpSpace:
                     self.like_list.append(like)
                     self.favorite_list.append(favorite)
                     self.coin_list.append(coin)
-                    # time.sleep(uniform(1.2, 3.0))
                     break
                 except Exception as e:
                     logging.error(f"获取视频:{video_name}的信息时发生错误,错误:{e}")
@@ -128,25 +227,28 @@ class UpSpace:
 
     def get_comment(self):
         for aid in self.aid_list:
+            index = self.aid_list.index(aid)
+            bvid = self.bvid_list[index]
             p = r"\.|\/|\?"
-            self.name = re.sub(p, "", self.title_list[self.aid_list.index(aid)])
+            self.name = re.sub(p, "", self.title_list[index])
             video_comment = get_comments(aid)
             self.__save_comment(video_comment, self.name)
+            self.get_barrage(bvid)
+            time.sleep(uniform(1.2, 3.0))
 
-    def get_barrage(self):
-        for vurl in self.url_list:
-            p = r"\.|\/|\?"
-            self.name = re.sub(p, "", self.title_list[self.url_list.index(vurl)])
-            barrage_url = get_cid(vurl)
-            txt = get_barrages(barrage_url)
-            p_data = parse_html(txt)
-            if p_data:
-                self.__data_preprocess(p_data, self.name)
-
+    def get_barrage(self, bvid):
+        barrage_url = get_cid(bvid)
+        txt = get_barrages(barrage_url)
+        p_data = parse_html(txt)
+        if p_data:
+            self.__data_preprocess(p_data, self.name)
+        else:
+            self.__make_cwd()
+        self.sentence = ""
 
     def __make_cwd(self):
         if self.sentence:
-            gen_cwd(self.sentence, self.name)
+            self.gen_cwd(self.sentence, self.name)
 
     def __data_preprocess(self, barrage, file_name):
         data_dict = {
@@ -184,7 +286,6 @@ class UpSpace:
             self.__count_words(sentence, self.name)
             self.sentence += "".join(sentence)
             self.__make_cwd()
-            self.sentence = ""
         except Exception as e:
             logging.error("处理弹幕时发生错误:{}".format(e))
 
@@ -200,7 +301,8 @@ class UpSpace:
                 if Path(f"data/csv/{self.space}/{file_name}").absolute().is_dir() is not True:
                     logging.debug(f"创建目录:{self.space}/{file_name}")
                     Path(f"data/csv/{self.space}/{file_name}").absolute().mkdir()
-                pd_data.to_csv(f"data/csv/{self.space}/{file_name}/{file_name}_评论.csv", index=False, header=False, mode="w",
+                pd_data.to_csv(f"data/csv/{self.space}/{file_name}/{file_name}_评论.csv", index=False, header=False,
+                               mode="w",
                                encoding="utf-8_sig")
             except Exception as e:
                 logging.error(f"{file_name}.csv写入过程发生错误,错误原因: {e}")
@@ -242,3 +344,23 @@ class UpSpace:
         pd_count = pd.DataFrame(frequency, index=["times"]).T.sort_values("times", ascending=False)
         pd_count.to_csv(f"data/csv/{self.space}/{file_name}/{file_name}_词频.csv", mode="a", header=None,
                         encoding="utf-8_sig")
+
+    def gen_cwd(self, text, file_name):
+        colormaps = colors.ListedColormap(['#4169E1', '#1E90FF', '#87CEFA'])
+        mask = np.array(Image.open("data/img/imgs.png"))
+        wcd = WordCloud(
+            colormap=colormaps,
+            font_path="C:\\Windows\\Fonts\\STFANGSO.TTF",
+            mask=mask,
+            background_color="White",
+            repeat=True,
+            mode='RGBA',
+            scale=5,
+            collocations=False
+        )
+        logging.debug("正在生成:{} 的词云".format(file_name))
+        image_produce = wcd.generate(text).to_image()
+        if Path(f"data/WordCloud/{self.space}词云").absolute().is_dir() is not True:
+            logging.debug(f"创建目录:{self.space}词云")
+            Path(f"data/WordCloud/{self.space}词云").absolute().mkdir()
+        image_produce.save("data/WordCloud/{}词云/{}.png".format(self.space, file_name))

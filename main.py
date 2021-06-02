@@ -10,4 +10,3 @@ if __name__ == '__main__':
     up.time_handle()
     up.data_write()
     up.get_comment()
-    up.get_barrage()
