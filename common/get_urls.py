@@ -350,7 +350,7 @@ class UpSpace:
         mask = np.array(Image.open("data/img/imgs.png"))
         wcd = WordCloud(
             colormap=colormaps,
-            font_path="C:\\Windows\\Fonts\\STFANGSO.TTF",
+            # font_path="C:\\Windows\\Fonts\\STFANGSO.TTF",
             mask=mask,
             background_color="White",
             repeat=True,
