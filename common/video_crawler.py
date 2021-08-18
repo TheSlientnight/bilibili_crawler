@@ -15,7 +15,6 @@ from wordcloud import WordCloud
 import common.globalver as gl
 from common.logs import logging
 
-
 lock = threading.Lock()
 pool = threadpool.ThreadPool(1)
 
@@ -90,10 +89,13 @@ def get_comments(aid) -> list:
     def get_comment(page):
         res = requests.get("https://api.bilibili.com/x/v2/reply?pn={}&type=1&oid={}&sort=1"
                            .format(page, aid)).json()
-        comment = jsonpath(res, r"$..data[replies]..[content][message]")
-        lock.acquire()
-        comment_list.extend(comment)
-        lock.release()
+        try:
+            comment = jsonpath(res, r"$..data[replies]..[content][message]")
+            lock.acquire()
+            comment_list.extend(comment)
+            lock.release()
+        except TypeError as e:
+            logging.error("当前视频:%s 没有评论:%s" % (aid, e))
 
     for i in range(3):
         try:
